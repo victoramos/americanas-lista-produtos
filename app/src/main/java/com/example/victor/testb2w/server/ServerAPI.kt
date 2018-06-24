@@ -20,19 +20,14 @@ class ServerAPI private constructor(private val retrofit: Retrofit){
 
     companion object{
         val instance: ServerAPI by lazy {
-
-            val logging = HttpLoggingInterceptor()
-            logging.level = HttpLoggingInterceptor.Level.BODY
-
             val httpClient = OkHttpClient.Builder()
-            httpClient.addInterceptor(logging)  // <-- this is the important line!
             httpClient.addInterceptor { chain ->
                 val original = chain.request()
                 val originalHttpUrl = original.url()
 
                 val url = originalHttpUrl.newBuilder()
-                        .addQueryParameter("apiClientKey", "ff3668967197e707")
-                        .addQueryParameter("apiKey", "12207f52edfc5c9a")
+                        .addQueryParameter("apiClientKey", ServerConstants.API_CLIENT_KEY)
+                        .addQueryParameter("apiKey", ServerConstants.API_KEY)
                         .build()
 
                 // Request customization: add request headers

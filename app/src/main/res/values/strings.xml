@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Americanas</string>
     <string name="title_activity_product_detail">ProductDetail</string>
+    <string name="request_error_title">Oops</string>
+    <string name="request_error_body">Não foi possível conectar-se ao servidor. Por favor, verifique sua conexão com a internet</string>
+    <string name="request_error_positive_button">Ok</string>
 </resources>

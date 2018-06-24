@@ -4,17 +4,23 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
-import android.util.Log
+import android.view.View
 import com.example.victor.testb2w.R
 import com.example.victor.testb2w.view.adapter.ProductsAdapter
 import com.example.victor.testb2w.view.adapter.SectionedGridLayoutManager
-import com.keepbrain.app.server.ServerAPI
+import com.example.victor.testb2w.view.dialog.RequestErrorDialog
+import com.example.victor.testb2w.viewmodel.ProductViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
     private var mAdapter: ProductsAdapter? = null
+
+    private val mViewModel: ProductViewModel by lazy {
+        ProductViewModel()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,22 +33,29 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = SectionedGridLayoutManager(mAdapter!!, this, 2)
         recyclerView.adapter = mAdapter
 
-        ServerAPI.instance.containers().getAllProducts("home_page.rr1|home_page.rr2|home_page.rr3|home_page.history|home_page.banners_dest_prod_1|home_page.banners_dest_prod_2|home_page.banners_dest_prod_3|home_page.banners_dest_prod_4|home_page.banners_dest_prod_5|home_page.banners_dest_prod_6|home_page.banners_dest_prod_7|home_page.banners_dest_prod_8|home_page.banners_dest_prod_9|home_page.banners_dest_prod_10")
+        mViewModel.getHomeProducts()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map {
-                    it.placements
-                }
                 .subscribe({
-                    mAdapter!!.setData(it)
+                    mAdapter!!.setData(mViewModel.getSectionedList(it))
                 }, {
-                    Log.i("Dima", "erro")
+                    RequestErrorDialog().getDialog(this).show()
                 })
 
         mAdapter!!.clickEvent.subscribe({
-            val intent = Intent(this, ProductDetail::class.java)
+            val intent = Intent(this, ProductDetailActivity::class.java)
             intent.putExtra("productUrl", it)
             startActivity(intent)
         })
+
+        mViewModel.loadingEvent
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if(it){
+                        progress_loading.visibility = View.VISIBLE
+                    }else{
+                        progress_loading.visibility = View.GONE
+                    }
+                })
     }
 }

@@ -8,7 +8,7 @@ import com.example.victor.testb2w.R
 import android.webkit.WebViewClient
 
 
-class ProductDetail : AppCompatActivity() {
+class ProductDetailActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

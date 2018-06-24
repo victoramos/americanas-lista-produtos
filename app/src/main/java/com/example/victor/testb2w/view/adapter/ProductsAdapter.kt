@@ -13,7 +13,7 @@ import java.util.*
 
 
 class ProductsAdapter(private var mContext: Context?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var data: MutableList<Item> = arrayListOf()
+    private var data: List<Item> = arrayListOf()
     val clickEvent = PublishSubject.create<String>()!!
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -66,25 +66,8 @@ class ProductsAdapter(private var mContext: Context?) : RecyclerView.Adapter<Rec
         return data.size
     }
 
-    fun setData(data: List<Placements>){
-        for (item in data){
-            val header = Header()
-            header.name = item.strategyMessage
-            this.data.add(header)
-
-            for(recommendedProduct in item.recommendedProducts){
-                val product = Product()
-                product.thumb = recommendedProduct.imageURL
-                product.name = Html.fromHtml(recommendedProduct.name).toString()
-                product.productUrl = recommendedProduct.productURL
-
-                val format = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
-                product.price = format.format((recommendedProduct.price/100))
-
-                this.data.add(product)
-            }
-        }
-
+    fun setData(data: List<Item>){
+        this.data = data
         notifyDataSetChanged()
     }
 
